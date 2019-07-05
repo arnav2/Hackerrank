@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-
+#include <limits>
 using namespace std;
 
 string ltrim(const string &);
@@ -20,7 +20,6 @@ vector<string> split(const string &);
 typedef
 struct nodes{
     vector<int> adjacent_node_values; 
-    int id;
 } Node;
 
 typedef
@@ -36,25 +35,70 @@ class Graph {
     public:
         Graph(int n , int k) {
             nodes.resize(n);
-            for(int i = 0; i < n ; ++i)
-            {
-                nodes[i].id = i;
-            }
             edges.resize(k);
         }
     
-        void add_edge(int u, int v) {
+        void add_edge(int u, int v , int weight) {
             nodes[u].adjacent_node_values.push_back(v);
             nodes[v].adjacent_node_values.push_back(u);
+            
+            Edge newEdge; 
+            newEdge.adjacent_node_values.push_back(u); 
+            newEdge.adjacent_node_values.push_back(v);
+            newEdge.weight = weight; 
+            edges.push_back(newEdge);
         }
     
 };
+
+
+void createAdjointMatrix(int n , vector<vector<int>>& roads , std::vector<std::vector<int> >& resultMatrix )
+{
+    int inf = std::numeric_limits<int>::max();
+    resultMatrix.resize(n);
+    for(int i = 0 ; i < n ; ++i)
+    {
+        resultMatrix[i].resize(n , inf);
+    }
+
+    // Bidirectional roads 
+    for (int i = 0; i < roads.size() ; ++i)
+    {
+        resultMatrix[roads[i][0] - 1][roads[i][1] - 1] = roads[i][2];
+        resultMatrix[roads[i][1] - 1][roads[i][0] - 1] = roads[i][2];
+    }
+}
+
+int tsp ( std::vector<std::vector<int> >& adjacencyMatrix ,  std::vector<int>& cost, std::vector<int>& parent , int startingPosition)
+{
+    for (int i = 0; i < n; ++i)
+    {
+        if (i != startingPosition && adjacencyMatrix[i][startingPosition] < cost[i])
+        {
+            cost[i] += adjacencyMatrix[i][startingPosition];
+            parent[i] = startingPosition;
+            cout << "cost vector is : ";
+            for (auto& elem : cost)
+            {
+                cout << cos
+            }
+
+        }
+    }
+
+}
+
 int shop(int n, int k, vector<string> centers, vector<vector<int>> roads) {
     Graph graph(n , k);
-    for (auto& line : centers)
+    std::vector<std::vector<int> > adjacencyMatrix;
+    for (auto& line : roads)
     {
-        cout << line << endl;
-    } 
+        // cout << line[0] << " " << line[1] << " " << line[2] << endl;
+        graph.add_edge(line[0] - 1 , line[1] - 1 , line[2]);
+    }
+
+    createAdjointMatrix(n , roads , adjacencyMatrix);
+    tsp (adjacencyMatrix);
 }
 
 int main()
